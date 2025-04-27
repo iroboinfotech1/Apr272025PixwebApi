@@ -1,0 +1,38 @@
+-- Table: space_admin.play_list
+
+-- DROP TABLE IF EXISTS space_admin.play_list;
+
+CREATE TABLE IF NOT EXISTS space_admin.play_list
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    play_list_name character varying COLLATE pg_catalog."default" NOT NULL,
+    media_name character varying COLLATE pg_catalog."default" NOT NULL,
+    thumbnail character varying COLLATE pg_catalog."default" NOT NULL,
+    duration_type character varying COLLATE pg_catalog."default" NOT NULL,
+    play_duration character varying COLLATE pg_catalog."default" NOT NULL,
+    volume integer NOT NULL,
+    CONSTRAINT play_list_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.play_list
+    OWNER to postgres;
+
+
+
+-------------- TEST DATA
+
+INSERT INTO  space_admin.play_list (play_list_name,media_name,thumbnail,duration_type,play_duration ,volume)
+   VALUES ('TestList','TestMedia','https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2874&q=80'
+		   	,'full','','40')
+
+INSERT INTO  space_admin.play_list (play_list_name,media_name,thumbnail,duration_type,play_duration ,volume)
+   VALUES ('List1','Media1','https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2874&q=80'
+		   	,'full','','50')
+
+INSERT INTO  space_admin.play_list (play_list_name,media_name,thumbnail,duration_type,play_duration ,volume)
+   VALUES ('List1','Media2','https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2874&q=80'
+		   	,'part','00:03:00','50')
+
+-------------

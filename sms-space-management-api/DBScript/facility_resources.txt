@@ -1,0 +1,170 @@
+﻿
+-- SEQUENCE: space_admin.facilities_master_facilityid_seq
+
+-- DROP SEQUENCE IF EXISTS space_admin.facilities_master_facilityid_seq;
+
+CREATE SEQUENCE IF NOT EXISTS space_admin.facilities_master_facilityid_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1
+    OWNED BY facilities_master.facility_id;
+
+ALTER SEQUENCE space_admin.facilities_master_facilityid_seq
+    OWNER TO postgres;
+	
+	
+
+-- Table: space_admin.facility_resources
+
+-- DROP TABLE IF EXISTS space_admin.facility_resources;
+
+CREATE TABLE IF NOT EXISTS space_admin.facility_resources
+(
+    resource_id integer NOT NULL DEFAULT nextval('space_admin.facilities_master_facilityid_seq'::regclass),
+    type text COLLATE pg_catalog."default",
+    is_enabled boolean,
+    icon text COLLATE pg_catalog."default",
+    facility_id integer,
+    name text COLLATE pg_catalog."default",
+    CONSTRAINT facility_resources_pkey PRIMARY KEY (resource_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.facility_resources
+    OWNER to postgres;
+	
+
+---TYPE
+INSERT INTO space_admin.facilities_master(
+	facility_id, facility_name, email, escalation_period, escalation_email, notify_facilities, notify_organizer, org_id)
+	VALUES (101, 'Type', 'Kathir@gmail.com', 5, 'vel@gmail.com', true, true, 100);
+	
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (11, 'count', true, '', 101, 'Desk');
+
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (12, 'count', true, '', 101, 'Workstation');
+	
+--DESK TYPE	
+INSERT INTO space_admin.facilities_master(
+	facility_id, facility_name, email, escalation_period, escalation_email, notify_facilities, notify_organizer, org_id)
+	VALUES (102, 'Desk Type', 'Kathir@gmail.com', 5, 'vel@gmail.com', true, true, 100);
+	
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (13, 'count', true, '', 102, 'Normal Desk');
+
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (14, 'count', true, '', 102, 'Standing Desk');	
+		
+---FEATURES
+INSERT INTO space_admin.facilities_master(
+	facility_id, facility_name, email, escalation_period, escalation_email, notify_facilities, notify_organizer, org_id)
+	VALUES (103, 'Features', 'Kathir@gmail.com', 5, 'vel@gmail.com', true, true, 100);
+	
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (15, 'count', true, '', 103, 'Electrical Socket');
+
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (16, 'count', true, '', 103, 'Docking Station');
+	
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (17, 'count', true, '', 103, 'Computer');
+
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (18, 'count', true, '', 103, 'Dual Screen');
+	
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (19, 'count', true, '', 103, 'Drawer');
+
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (20, 'count', true, '', 103, 'Keyboard');
+
+INSERT INTO space_admin..facility_resources where (
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (21, 'count', true, '', 103, 'Mouse');
+------
+--CREATE TABLE
+CREATE TABLE IF NOT EXISTS space_admin.facility_types
+(
+	facility_type_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+	facility_type_name text COLLATE pg_catalog."default"
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.facility_types
+	OWNER to postgres	
+-- INSERT TEST RECORDS  (Eg: 1 = Room, 2 = Parking, 3 = Desk)
+INSERT INTO space_admin.facility_types(facility_type_name) VALUES('Room');
+INSERT INTO space_admin.facility_types(facility_type_name) VALUES('Parking');
+INSERT INTO space_admin.facility_types(facility_type_name) VALUES('Desk');
+------
+--ADD COLUMN
+	ALTER TABLE space_admin.facilities_master ADD COLUMN facility_type_id= INTEGER;
+	
+----UPDATE facilities_master
+UPDATE space_admin.facilities_master SET facility_type_id=3 WHERE facility_name in ('Type','Desk Type','Features')	
+----
+---TYPE Parking
+INSERT INTO space_admin.facilities_master(
+	facility_id, facility_name, email, escalation_period, escalation_email, notify_facilities, notify_organizer, org_id, facility_type_id)
+	VALUES (104, 'Type', 'Kathir@gmail.com', 5, 'vel@gmail.com', true, true, 100, 2);
+	
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (21, 'count', true, '', 104, 'Normal Car Park');
+
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (22, 'count', true, '', 104, 'Oversized Car Park');
+
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (23, 'count', true, '', 104, 'Disabled Car Park');
+
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (24, 'count', true, '', 104, 'Reserved Car Park');
+	
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (25, 'count', true, '', 104, 'Bike Park');
+
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (26, 'count', true, '', 104, 'Bike Parking Bay with count selection');	
+	
+---Features Parking
+INSERT INTO space_admin.facilities_master(
+	facility_id, facility_name, email, escalation_period, escalation_email, notify_facilities, notify_organizer, org_id, facility_type_id)
+	VALUES (105, 'Features', 'Kathir@gmail.com', 5, 'vel@gmail.com', true, true, 100, 2);
+	
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (27, 'count', true, '', 105, 'EV Charging Socket');
+
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (28, 'count', true, '', 105, 'Stacked Parking');
+
+INSERT INTO space_admin.facility_resources(
+	resource_id, type, is_enabled, icon, facility_id, name)
+	VALUES (29, 'count', true, '', 105, 'Covered Parking / Open Parking');
+
+---------------------------
+--ADD NEW COLUMN - 21-Apr-2024
+ALTER TABLE space_admin.facility_resources ADD COLUMN count integer;
+---------------------------

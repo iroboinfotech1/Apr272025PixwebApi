@@ -1,0 +1,21 @@
+﻿-- Table: space_admin.player_sensitive
+
+-- DROP TABLE IF EXISTS space_admin.player_sensitive;
+
+CREATE TABLE IF NOT EXISTS space_admin.player_sensitive
+(
+    serial_number character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    sixdigitcode character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    token_patching character varying(50) COLLATE pg_catalog."default",
+    token_refresh character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT player_sensitive_pkey PRIMARY KEY (serial_number),
+    CONSTRAINT player_sensitive_serial_number_fkey FOREIGN KEY (serial_number)
+        REFERENCES space_admin.player_master (serial_number) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.player_sensitive
+    OWNER to postgres;

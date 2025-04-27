@@ -1,0 +1,23 @@
+﻿CREATE TABLE space_admin.tcategory (
+	category_id INT GENERATED ALWAYS AS IDENTITY,
+	categoryn_name VARCHAR ( 250 ),
+	 PRIMARY KEY(category_id)
+);
+
+
+
+CREATE TABLE space_admin.tcategory_master(
+   category_txn_id INT GENERATED ALWAYS AS IDENTITY,
+   building_id INT NOT NULL,
+   category_id INT,
+   email VARCHAR(100),
+   PRIMARY KEY(category_txn_id),
+   CONSTRAINT fk_categoryId
+      FOREIGN KEY(category_id) 
+	  REFERENCES space_admin.tcategory(category_id),
+	CONSTRAINT fk_categoryBuildingId
+      FOREIGN KEY(building_id) 
+	  REFERENCES space_admin.buildings_master(building_id)
+);
+
+

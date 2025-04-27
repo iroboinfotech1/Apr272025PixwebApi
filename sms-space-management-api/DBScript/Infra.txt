@@ -1,0 +1,9 @@
+﻿CREATE TABLE IF NOT EXISTS space_admin.infrastructure
+(
+    infra_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    infra_name text COLLATE pg_catalog."default",
+	infracount integer,
+	enabled Boolean,
+	category text COLLATE pg_catalog."default",
+	room_id integer
+)
