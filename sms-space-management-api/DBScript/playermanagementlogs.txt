@@ -1,0 +1,20 @@
+﻿-- Table: space_admin.playermanagementlogs
+
+-- DROP TABLE IF EXISTS space_admin.playermanagementlogs;
+
+CREATE TABLE IF NOT EXISTS space_admin.playermanagementlogs
+(
+    serial_number character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    status text COLLATE pg_catalog."default",
+    activity text COLLATE pg_catalog."default",
+    loginsertdate date,
+    CONSTRAINT fk_child_parent FOREIGN KEY (serial_number)
+        REFERENCES space_admin.player_master (serial_number) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.playermanagementlogs
+    OWNER to postgres;

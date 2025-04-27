@@ -1,0 +1,44 @@
+﻿
+--Create Database
+
+CREATE DATABASE Playermanagement;
+
+--Create Schema
+
+CREATE SCHEMA space_admin;
+
+--Insert script
+
+CREATE TABLE space_admin.player_master (
+	serial_number VARCHAR ( 50 ) PRIMARY KEY,
+	device_name VARCHAR ( 100 ),
+	ip_adress VARCHAR ( 50 ) ,
+	department VARCHAR ( 50 ) ,
+	location_name VARCHAR ( 50 ),
+	contact_person VARCHAR ( 50 ),
+	resolution VARCHAR ( 50 ),
+	space_name VARCHAR ( 50 ),
+	theme VARCHAR ( 50 ),
+	orientation VARCHAR ( 50 )
+
+);
+
+--insert
+{
+  "serialNumber": "1",
+  "deviceName": "Dell",
+  "ipAddress": "10.01.10.10",
+  "department": "ComputerScience",
+  "locationName": "Chennai",
+  "contactPerson": "xyz",
+  "resolution": "Good",
+  "spaceName": "Fullspace",
+  "theme": "Backgroud",
+  "orientation": "left",
+  "deviceStatus": 0
+}
+--Delete
+
+--update
+
+--Get

@@ -1,0 +1,90 @@
+﻿Meeting:
+
+-- Table: space_admin.space_meeting
+
+-- DROP TABLE IF EXISTS space_admin.space_meeting;
+
+CREATE TABLE IF NOT EXISTS space_admin.space_meeting
+(
+    meeting_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    meeting_room_id integer NOT NULL,
+    all_days boolean,
+    reminder character varying(100) COLLATE pg_catalog."default",
+    start_date timestamp without time zone,
+    end_date timestamp without time zone,
+    meeting_tiltle character varying(100) COLLATE pg_catalog."default",
+    participants character varying(100) COLLATE pg_catalog."default",
+    notes character varying(100) COLLATE pg_catalog."default",
+    meeting_type character varying(100) COLLATE pg_catalog."default",
+    notification character varying(100) COLLATE pg_catalog."default",
+    reference_number character varying(100) COLLATE pg_catalog."default",
+    created_by character varying(100) COLLATE pg_catalog."default",
+    updted_by character varying(100) COLLATE pg_catalog."default",
+    create_date timestamp without time zone NOT NULL DEFAULT now(),
+    updated_date timestamp without time zone NOT NULL DEFAULT now(),
+    CONSTRAINT space_meeting_pkey PRIMARY KEY (meeting_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.space_meeting
+    OWNER to postgres;
+
+
+
+Service:
+
+    -- Table: space_admin.space_service
+
+-- DROP TABLE IF EXISTS space_admin.space_service;
+
+CREATE TABLE IF NOT EXISTS space_admin.space_service
+(
+    service_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    meeting_id integer,
+    no_of_cofee integer,
+    no_of_snackes integer,
+    no_of_lunch integer,
+    created_by character varying(100) COLLATE pg_catalog."default",
+    updted_by character varying(100) COLLATE pg_catalog."default",
+    create_date timestamp without time zone NOT NULL DEFAULT now(),
+    updated_date timestamp without time zone NOT NULL DEFAULT now(),
+    CONSTRAINT space_service_pkey PRIMARY KEY (service_id),
+    CONSTRAINT fk_service FOREIGN KEY (meeting_id)
+        REFERENCES space_admin.space_meeting (meeting_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.space_service
+    OWNER to postgres;
+
+Parking:
+-- Table: space_admin.space_parking
+
+-- DROP TABLE IF EXISTS space_admin.space_parking;
+
+CREATE TABLE IF NOT EXISTS space_admin.space_parking
+(
+    parking_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    meeting_id integer,
+    participant_name character varying(100) COLLATE pg_catalog."default",
+    vechicle_number character varying(50) COLLATE pg_catalog."default",
+    slot_number character varying(100) COLLATE pg_catalog."default",
+    created_by character varying(100) COLLATE pg_catalog."default",
+    updted_by character varying(100) COLLATE pg_catalog."default",
+    create_date timestamp without time zone NOT NULL DEFAULT now(),
+    updated_date timestamp without time zone NOT NULL DEFAULT now(),
+    CONSTRAINT space_parking_pkey PRIMARY KEY (parking_id),
+    CONSTRAINT fk_parking FOREIGN KEY (meeting_id)
+        REFERENCES space_admin.space_meeting (meeting_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.space_parking
+    OWNER to postgres;

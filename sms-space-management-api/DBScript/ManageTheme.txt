@@ -1,0 +1,77 @@
+﻿-- Table: space_admin.managetheme
+
+-- DROP TABLE IF EXISTS space_admin.managetheme;
+
+CREATE TABLE IF NOT EXISTS space_admin.managetheme
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    themethumbnail text COLLATE pg_catalog."default",
+    themename text COLLATE pg_catalog."default",
+    themetype text COLLATE pg_catalog."default",
+    themedata text COLLATE pg_catalog."default"
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.managetheme
+    OWNER to postgres;
+    
+    
+//Insert Dummy Records
+
+INSERT INTO space_admin.manageTheme (themethumbnail, themename, themetype) 
+VALUES 
+('path1', 'Theme1', 'Type1'),
+('path2', 'Theme2', 'Type2'),
+('path3', 'Theme3', 'Type3');
+
+
+-- Table: space_admin.manageFonts
+
+-- DROP TABLE IF EXISTS space_admin.manageFonts;
+
+CREATE TABLE IF NOT EXISTS space_admin.manageFonts
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    fontname text COLLATE pg_catalog."default",
+    fontsize text COLLATE pg_catalog."default"
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.manageFonts
+    OWNER to postgres;
+
+INSERT INTO space_admin.manageFonts (fontname, fontsize) 
+VALUES 
+('Arial', '18px'),
+('Arial', '24px'),
+('Arial', '36px');
+
+-- Table: space_admin.manageLanguage
+
+-- DROP TABLE IF EXISTS space_admin.manageLanguage;
+
+CREATE TABLE IF NOT EXISTS space_admin.manageLanguage
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    LanguageName text COLLATE pg_catalog."default"
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.manageLanguage
+    OWNER to postgres;
+	
+INSERT INTO space_admin.manageLanguage (LanguageName) 
+VALUES 
+('English'),
+('Arabic'),
+('French');
+	
+-- ADD 2 NEW COLUMUNS
+ALTER TABLE space_admin.manageTheme
+ADD COLUMN logo text COLLATE pg_catalog."default"
+
+ALTER TABLE space_admin.manageTheme
+ADD COLUMN background text COLLATE pg_catalog."default"

@@ -1,0 +1,39 @@
+-- Table: space_admin.space_meeting
+
+-- DROP TABLE IF EXISTS space_admin.space_meeting;
+
+CREATE TABLE IF NOT EXISTS space_admin.space_meeting
+(
+    meeting_id integer NOT NULL DEFAULT nextval('space_admin.space_meeting_meetingid_seq'::regclass),
+    all_days boolean,
+    reminder text COLLATE pg_catalog."default",
+    start_date timestamp without time zone,
+    end_date timestamp without time zone,
+    org_id integer,
+    building_id integer,
+    floor_id integer,
+    no_of_attendees integer,
+    meeting_name text COLLATE pg_catalog."default",
+    space_id integer,
+    meeting_type integer,
+    CONSTRAINT space_meeting_pkey PRIMARY KEY (meeting_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.space_meeting
+    OWNER to postgres;
+
+CREATE SEQUENCE IF NOT EXISTS space_admin.space_meeting_meetingid_seq
+	INCREMENT 1
+	START 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	CACHE 1
+	OWNED BY space_admin.space_meeting.meeting_id;
+
+ALTER SEQUENCE space_admin.space_meeting_meetingid_seq
+	OWNER TO postgres;
+	
+ALTER TABLE IF EXISTS space_admin.space_meeting
+    Alter Column meeting_id set DEFAULT nextval('space_admin.space_meeting_meetingid_seq')

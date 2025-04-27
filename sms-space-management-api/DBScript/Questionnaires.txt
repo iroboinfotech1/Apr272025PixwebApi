@@ -1,0 +1,33 @@
+
+-- Table questionnaires_master
+CREATE TABLE IF NOT EXISTS space_admin.questionnaires_master
+(
+    q_id  integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    q_text text COLLATE pg_catalog."default",
+    q_type text COLLATE pg_catalog."default",
+	q_type_value text COLLATE pg_catalog."default",
+	q_soft_delete boolean,
+    CONSTRAINT questionnaires_master_pkey PRIMARY KEY (q_id)
+)
+
+-- Table questionnaires_portal
+
+CREATE TABLE IF NOT EXISTS space_admin.questionnaires_portal
+(
+    q_id  integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+	q_name text COLLATE pg_catalog."default",
+	q_default boolean,
+    q_json text COLLATE pg_catalog."default",
+    CONSTRAINT questionnaires_portal_pkey PRIMARY KEY (q_id)
+)
+
+-- visitor_portal
+
+CREATE TABLE IF NOT EXISTS space_admin.visitor_portal
+(
+    vp_id  integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+	visit_date timestamp without time zone,
+    vp_json text COLLATE pg_catalog."default",
+	visitor_photo text COLLATE pg_catalog."default",
+    CONSTRAINT visitor_portal_pkey PRIMARY KEY (vp_id)
+)

@@ -1,0 +1,78 @@
+﻿-- Table: space_admin.report_fault
+
+-- DROP TABLE IF EXISTS space_admin.report_fault;
+
+CREATE TABLE IF NOT EXISTS space_admin.report_fault
+(
+    fault_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    fault_type character varying(100) COLLATE pg_catalog."default",
+    remarks character varying(100) COLLATE pg_catalog."default",
+    lookup_id integer NOT NULL,
+    lookup_value character varying(200) COLLATE pg_catalog."default",
+    floor_id integer
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.report_fault
+    OWNER to postgres;
+
+
+
+    -- Table: space_admin.lookup_report_fault
+
+-- DROP TABLE IF EXISTS space_admin.lookup_report_fault;
+
+CREATE TABLE IF NOT EXISTS space_admin.lookup_report_fault
+(
+    lookup_id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    lookup_fault_type character varying(100) COLLATE pg_catalog."default",
+    lookup_fault_name character varying(100) COLLATE pg_catalog."default",
+    remarks character varying(100) COLLATE pg_catalog."default",
+    CONSTRAINT lookup_report_fault_pkey PRIMARY KEY (lookup_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.lookup_report_fault
+    OWNER to postgres;
+	
+
+    Input:
+
+
+   LOOKup table script :
+   INSERT INTO space_admin.lookup_report_fault(
+	lookup_fault_type, lookup_fault_name, remarks)
+	VALUES ('CHAIR', 'NOLEG', 'No legs');
+	
+	INSERT INTO space_admin.lookup_report_fault(
+	lookup_fault_type, lookup_fault_name, remarks)
+	VALUES ('CHAIR', 'CHAIRBROKEN', 'chair broken');
+	
+	INSERT INTO space_admin.lookup_report_fault(
+	lookup_fault_type, lookup_fault_name, remarks)
+	VALUES ('CHAIR', 'NEEDCHAIR', 'Need chair');
+	
+	INSERT INTO space_admin.lookup_report_fault(
+	lookup_fault_type, lookup_fault_name, remarks)
+	VALUES ('CHAIR', 'NONE', 'Not matched ');
+	
+	
+	
+	
+	INSERT INTO space_admin.lookup_report_fault(
+	lookup_fault_type, lookup_fault_name, remarks)
+	VALUES ('PHONE', 'NOWIRE', 'No wire');
+	
+	INSERT INTO space_admin.lookup_report_fault(
+	lookup_fault_type, lookup_fault_name, remarks)
+	VALUES ('PHONE', 'NORECEIVER', 'No receiver');
+	
+	INSERT INTO space_admin.lookup_report_fault(
+	lookup_fault_type, lookup_fault_name, remarks)
+	VALUES ('CHAIR', 'NOTWORKING', 'Not working');
+	
+	INSERT INTO space_admin.lookup_report_fault(
+	lookup_fault_type, lookup_fault_name, remarks)
+	VALUES ('PHONE', 'NONE', 'No legs');

@@ -1,0 +1,312 @@
+﻿using Dapper;
+using sms.space.management.application.Abstracts.Repositories;
+using sms.space.management.data.access.BusinessLogic;
+using sms.space.management.domain.Entities.Building;
+using sms.space.management.domain.Entities.Organization;
+using sms.space.management.domain.Entities.Spaces;
+using System.Collections;
+
+namespace sms.space.management.data.access.Repositories
+{
+    public class SpacesRepository : ISpacesRepository
+    {
+        private readonly DbSession _session;
+
+        public SpacesRepository(DbSession session)
+        {
+            _session = session;
+        }
+        public async Task<Spaces> Create(Spaces entity)
+        {
+            //Insert query
+
+            var query = $@"INSERT INTO space_admin.space_master(
+							 floor_id, space_type_id, spacealiasname, mappedcalendar_ids,mappedconnector_ids, groupname, email, directionnotes, servicingfacilities,
+							coordinates,allow_work_hours,allow_repeat,maximum_duration,auto_accept,auto_decline,starttime,end_time,resources,roles,building_id,org_id,space_image)
+							VALUES (@FloorId,@SpaceTypeId,@SpaceAliasName,@MappedCalendarIds,@MappedConnectorIds, @Groupname,@Email,@Directionnotes,@Servicingfacilities,
+							 @Coordinates,@AllowWorkHours,@allowRepeat,@maximumDuration,@AutoAccept,@AutoDecline,@Starttime,@Endtime,@Resources,@Roles,@BuildingId,@OrgId,@SpaceImage)
+							RETURNING space_id
+							";
+            //RETURNING id
+
+            entity.SpaceId = await _session.Connection.ExecuteScalarAsync<int>(query, entity, _session.Transaction);
+
+            return entity;
+
+
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+            //Delete query
+
+            var query = "Delete from space_admin.space_master where space_id=@ID";
+
+            int isDeleted = await _session.Connection.ExecuteAsync(query, new { ID = id }, _session.Transaction);
+
+            if (isDeleted > 0)
+                return true;
+            else
+                return false;
+
+        }
+
+        public async Task<List<Spaces>> GetAll()
+        {
+            //Get All
+      //      var query = @"SELECT * FROM space_admin.space_master f
+						//left join space_admin.buildings_master b on b.building_id = f.building_id
+						//left join space_admin.organisation_master r on r.org_id = f.org_id";
+
+            var query = @"SELECT sm.space_id,sm.floor_id,fm.floor_name,fm.floor_plan,sm.spacealiasname,sm.mappedcalendar_ids,sm.email,sm.directionnotes,sm.servicingfacilities,sm.coordinates
+                            ,sm.allow_repeat,sm.auto_accept,sm.auto_decline,sm.allow_work_hours,sm.workweekdays,sm.starttime,sm.end_time,sm.maximum_duration
+							,sm.resources,sm.roles,sm.org_id,sm.building_id,sm.space_type_id,sm.mappedconnector_ids,sm.groupname
+							,fy.facility_type_name AS space_type,sm.space_image
+							,bm.*,rm.*,fy.* FROM space_admin.space_master sm
+									left join space_admin.buildings_master bm on bm.building_id = sm.building_id
+									left join space_admin.organisation_master rm on rm.org_id = sm.org_id
+									left join space_admin.facility_types fy on fy.facility_type_id = sm.space_type_id
+                                    left join space_admin.floor fm on fm.floor_id = sm.floor_id";
+
+            var txnMap = new Dictionary<long, Spaces>();
+
+            //var result = await _session.Connection.QueryAsync<Facilities>(query, new { OrgId = orgId }, _session.Transaction);
+            var result = await _session.Connection.QueryAsync<Spaces, Building, Organization, Spaces>(
+            query,
+               param: null,
+               transaction: _session.Transaction,
+               splitOn: "building_id,org_id",
+               map: (space, building, txnDetail) => MapTransaction(space, building, txnDetail, txnMap));
+
+            return result.Distinct().ToList();
+
+
+            //         var result = await _session.Connection.QueryAsync<Spaces>(query, null, _session.Transaction);
+            //return result.ToList();
+        }
+
+        public async Task<List<AvailableSpace>> GetAllAvailableSpaces(SpaceFilter filter)
+        {
+            //Get All
+            var query = $@"SELECT sm.spacealiasname as spaceName,sm.space_image,sm.space_id as spaceId, sm.space_type_id as spaceType, sm.coordinates, 
+				b.building_id as buildingId, b.building_name as buildingName, b.address, om.image as organisationImage,
+				fr.resource_id as resourceId, fr.icon as resourceIcon, fr.facility_id as facilityId,smt.start_date as startDate, 
+                smt.end_date as endDate, fr.name as facilityName,f.floor_id as floorId, f.floor_name as floorName, f.floor_plan as floorImage,
+                sm.org_id as orgId, sr.resource_count as resourceCount, case when (start_date between '{Convert.ToString(filter.StartDate)}' and '{Convert.ToString(filter.EndDate)}') 
+			  	THEN 'false' 
+			  	when (end_date between '{Convert.ToString(filter.StartDate)}' and '{Convert.ToString(filter.EndDate)}') 
+			  	then 'false'
+			  	else 'true' end as isAvailable
+			  	FROM space_admin.space_master sm
+			  	left join space_admin.organisation_master om on sm.org_id = om.org_id
+				left join space_admin.buildings_master b on b.building_id = sm.building_id
+				left join space_admin.floor f on f.building_id = b.building_id
+				left join space_admin.space_resource sr on sm.space_id = sr.space_id
+				left join space_admin.facility_resources fr on sr.resource_id = fr.resource_id and  fr.is_enabled='true'
+				left join space_admin.space_meeting smt on smt.space_id=sm.space_id 
+                and smt.start_date between '{Convert.ToString(filter.StartDate)}' and '{Convert.ToString(filter.EndDate)}'
+				and smt.end_date between '{Convert.ToString(filter.StartDate)}' and '{Convert.ToString(filter.EndDate)}'
+				where sm.org_id=@org_id";
+
+	            if (filter.BuildingId != 0)
+	            {
+	                query = query + " and b.building_id=@building_id";
+	                if (filter.FloorId != 0)
+	                {
+	                    query = query + " and f.floor_id=@floor_id";
+	                }
+	            }           
+            
+             var result = await _session.Connection.QueryAsync<AvailableSpace>(
+
+            query,
+               param: new { org_id = filter.OrgId, building_id = filter.BuildingId, floor_Id = filter.FloorId, start_date = filter.StartDate, end_date = filter.EndDate},
+               transaction: _session.Transaction);
+            //map: (space, building, txnDetail) => MapTransaction(space, building, txnDetail, txnMap));
+
+            return result.Distinct().ToList();
+
+
+            //         var result = await _session.Connection.QueryAsync<Spaces>(query, null, _session.Transaction);
+            //return result.ToList();
+        }
+        public async Task<List<KeyValuePair<string, FloorSpaces>>> FindRooms(SpaceFilter filter)
+        {
+            //Get All
+            string query = $@"SELECT sm.spacealiasname as spaceName, sm.space_id as spaceId,
+				b.building_id as buildingId,
+				fr.resource_id as resourceId, fr.facility_id as facilityId, fr.name as facilityName,f.floor_id as floorId, f.floor_name as floorName,
+                sm.org_id as orgId, sr.resource_count as resourceCount
+				,smt.start_date,smt.end_date, smt.meeting_id
+				,case when (FLOOR(Extract(EPOCH from AGE(smt.start_date, '{Convert.ToString(filter.StartDate)}'))/60) > 0 or smt.start_date is null)
+			  	THEN 'true'
+			  	else 'false' end as isAvailable
+				,FLOOR(Extract(EPOCH from AGE(smt.start_date, '{Convert.ToString(filter.StartDate)}'))/60) as AvailableIn
+			  	FROM space_admin.space_master sm
+			  	left join space_admin.organisation_master om on sm.org_id = om.org_id
+				left join space_admin.buildings_master b on b.building_id = sm.building_id
+				left join space_admin.floor f on f.building_id = b.building_id 
+				left join space_admin.space_resource sr on sm.space_id = sr.space_id
+				left join space_admin.facility_resources fr on sr.resource_id = fr.resource_id and  fr.is_enabled='true'
+				left join space_admin.space_meeting smt on smt.space_id=sm.space_id 
+				where sm.org_id=@org_id and b.building_id=@building_id and f.floor_id=@floor_id
+				order by AvailableIn asc";
+            var result = await _session.Connection.QueryAsync<AvailableSpace>(
+            query,
+               param: new { org_id = filter.OrgId, building_id = filter.BuildingId, floor_Id = filter.FloorId, start_date = filter.StartDate, end_date = filter.EndDate },
+               transaction: _session.Transaction);
+            var response = result.Distinct().ToList();
+            List<KeyValuePair<string, FloorSpaces>> processedResponses = new List<KeyValuePair<string, FloorSpaces>>();
+            
+            foreach (var availableSpaceFloorDetail in response)
+            {
+                if (processedResponses.Count == 0 || !processedResponses.Any(processedFloorSpace => processedFloorSpace.Key.Contains(availableSpaceFloorDetail.SpaceName)))
+                {
+                    if (filter.spaceid == availableSpaceFloorDetail.SpaceId)
+                        continue;
+                    FloorSpaces floorSpace = new FloorSpaces();
+                    floorSpace.SpaceName = availableSpaceFloorDetail.SpaceName;
+                    floorSpace.SpaceId = availableSpaceFloorDetail.SpaceId;
+                    floorSpace.FloorName = availableSpaceFloorDetail?.FloorName;
+                    floorSpace.OrgId = availableSpaceFloorDetail.OrgId;
+                    floorSpace.BuildingId = availableSpaceFloorDetail.BuildingId;
+                    floorSpace.FloorId = availableSpaceFloorDetail.FloorId;
+                    floorSpace.IsAvailable = availableSpaceFloorDetail.IsAvailable;
+                    Hashtable obj = new Hashtable();
+                    //floorSpace.AvailableIn = availableSpaceFloorDetail.AvailableIn;
+                    foreach (var item in response.Where(floor => floor.SpaceId == availableSpaceFloorDetail.SpaceId).ToList())
+                    {
+                        SpaceResources spaceResource = new SpaceResources();
+                        spaceResource.FacilityId = item.FacilityId;
+                        spaceResource.FacilityName = item.FacilityName;
+                        spaceResource.ResourceId = item.ResourceId;
+                        spaceResource.ResourceCount = item.ResourceCount;
+                        spaceResource.IsAvailable = item.IsAvailable;
+                        if (floorSpace.SpaceResources != null && floorSpace.SpaceResources.Count > 0)
+                        {
+                            if(!obj.ContainsKey(item.ResourceId) && !obj.ContainsValue(item.FacilityId))
+                            {
+                                floorSpace.SpaceResources.Add(spaceResource);
+                                obj.Add(spaceResource.ResourceId, spaceResource.FacilityId);
+                            }
+                        }
+                        else
+                        {
+                            floorSpace.SpaceResources = new List<SpaceResources> { spaceResource };
+                        }
+                    }
+                    processedResponses.Add(new KeyValuePair<string, FloorSpaces>(availableSpaceFloorDetail.SpaceName, floorSpace));
+                }
+            }
+            return processedResponses;
+        }
+        private static Spaces MapTransaction(Spaces space, Building building, Organization org, Dictionary<long, Spaces> txnMap)
+        {
+            if (building != null)
+            {
+                space.Building = building;
+                if (org != null)
+                    space.Building.Organization = org;
+            }
+            if (org != null)
+                space.Organization = org;
+            return space;
+        }
+
+        public async Task<Spaces> GetById(int id)
+        {
+            // Null or invalid ID check
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid space ID.", nameof(id));
+            }
+
+            // Fetch the space details
+            var query = @"SELECT * FROM space_admin.space_master WHERE space_id = @ID";
+            var result = await _session.Connection.QueryAsync<Spaces>(
+                query,
+                new { ID = id },
+                _session.Transaction
+            );
+
+            // Get the first space or return null if none found
+            var space = result.FirstOrDefault();
+            if (space == null)
+            {
+                return null; // or throw an exception if no space is found
+            }
+
+            // Fetch capacity mapping for the space
+            var roomCapacityMapping = await GetCapacityForSpace(id);
+            if (roomCapacityMapping == null || !roomCapacityMapping.Any())
+            {
+                return space; // Return the space without resource count if no mapping exists
+            }
+
+            // Find the "Chair" resource in the capacity mapping
+            var chairResource = roomCapacityMapping
+                .Find(x => x.name?.Equals("Chair", StringComparison.OrdinalIgnoreCase) == true);
+
+            // Update the resource count if "Chair" exists
+            if (chairResource != null)
+            {
+                space.resource_count = chairResource.resource_count;
+            }
+
+            return space;
+        }
+        public async Task<List<Spaces>> GetCapacityForSpace(int id)
+        {
+            // SQL query with parameterized input
+            var query = @"SELECT sr.space_id, sfr.name, sr.resource_count 
+                  FROM space_admin.space_resource sr
+                  INNER JOIN space_admin.facility_resources sfr 
+                  ON sfr.facility_id = sr.facility_id AND sfr.resource_id = sr.resource_id
+                  WHERE sr.space_id = @ID";
+
+            // Execute query and convert to a list
+            var result = await _session.Connection.QueryAsync<Spaces>(
+                query,
+                new { ID = id },
+                _session.Transaction
+            );
+
+            // Convert result to List<Space>
+            return result.ToList();
+        }
+
+
+
+        public async Task<bool> Update(Spaces entity)
+        {
+
+            var query = $@"Update space_admin.space_master set
+							floor_id = @FloorId, space_type_id = @SpaceTypeId, spacealiasname = @SpaceAliasName,
+							mappedcalendar_ids = @MappedCalendarIds, email = @Email, directionnotes = @Directionnotes, 
+							servicingfacilities = @Servicingfacilities,
+							coordinates = @Coordinates,workweekdays = @Workweekdays,
+							starttime = @Starttime,end_time = @Endtime, resources = @Resources,
+                            allow_repeat = @AllowRepeat,auto_accept = @AutoAccept,auto_decline = @AutoDecline,allow_work_hours = @AllowWorkHours, maximum_duration = @MaximumDuration,
+							roles = @Roles, space_image = @SpaceImage where space_id = @SpaceId
+							";
+
+
+            var result = await _session.Connection.ExecuteAsync(query, entity, _session.Transaction);
+
+            if (result > 0)
+                return true;
+            else
+                return false;
+        }
+
+        public async Task<bool> SaveSettings(domain.Entities.Spaces.Settings request)
+        {
+
+            //if (result > 0)
+            return true;
+            //else
+            //    return false;
+        }
+    }
+}
+

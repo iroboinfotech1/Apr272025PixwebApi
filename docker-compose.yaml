@@ -1,0 +1,35 @@
+version: '2'
+networks:
+  sms-network:
+    driver: bridge
+services:
+  sms-api:
+    container_name: sms-api
+    image: ${DOCKER_ID}pixelkube-sms-api
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - sms-network
+    ports:
+      - 3000:80
+      - 3443:443
+    environment:
+      - conectionstring=Host=sms-db:5432; Database=${POSTGRES_DB}; Username=postgres;Password=${POSTGRES_PASSWORD}
+    depends_on:
+      - sms-db
+    
+  sms-db:
+    extends:
+      file: docker-database/docker-compose.yaml
+      service: database
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    env_file:
+      - .env
+    networks:
+      - sms-network
+    
+      
+volumes:
+  pgdata:

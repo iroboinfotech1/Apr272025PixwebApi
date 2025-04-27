@@ -1,0 +1,12 @@
+Create Table if not exists space_admin.space_resource
+(
+	space_id integer NOT NULL,
+	facility_id integer NOT NULL,
+	resource_id integer NOT NULL,
+	resource_count integer NOT NULL
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.space_resource
+    OWNER to postgres;

@@ -1,0 +1,27 @@
+﻿CREATE TABLE space_admin.tspace_type(
+   space_type_id INT GENERATED ALWAYS AS IDENTITY,
+   space_type_name VARCHAR(200) NOT NULL);
+
+   CREATE TABLE space_admin.troom_service(
+   room_service_id INT GENERATED ALWAYS AS IDENTITY,
+   item_id INT NOT NULL,
+   item_name VARCHAR(200),
+   item_image VARCHAR(200),
+   category_id INT NOT NULL,
+	building_id INT NOT NULL,
+	space_id INT NOT NULL,
+	schedule_id INT NOT NULL,
+   PRIMARY KEY(room_service_id), 
+   CONSTRAINT fk_roomserviceCategoryId
+      FOREIGN KEY(category_id) 
+	  REFERENCES space_admin.tcategory(category_id),
+	CONSTRAINT fk_roomserviceBuildingId
+      FOREIGN KEY(building_id) 
+	  REFERENCES space_admin.buildings_master(building_id),
+	CONSTRAINT fk_roomserviceSpacegId
+      FOREIGN KEY(space_id) 
+	  REFERENCES space_admin.space_master(space_id),
+	CONSTRAINT fk_roomserviceSchedleId
+      FOREIGN KEY(schedule_id) 
+	  REFERENCES space_admin.tschedule(schedule_id)
+); 

@@ -1,0 +1,20 @@
+﻿-- Table: space_admin.bookservices
+
+-- DROP TABLE IF EXISTS space_admin.bookservices;
+
+CREATE TABLE IF NOT EXISTS space_admin.bookservices
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    meetingroomsid integer,
+    servicename text COLLATE pg_catalog."default",
+    servicevalue integer
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.bookservices
+    OWNER to postgres;
+
+------
+ALTER TABLE space_admin.space_meeting ADD COLUMN notes TEXT;
+------

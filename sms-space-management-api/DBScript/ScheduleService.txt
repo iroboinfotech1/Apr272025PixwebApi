@@ -1,0 +1,11 @@
+﻿CREATE TABLE space_admin.tschedule(
+   schedule_id INT GENERATED ALWAYS AS IDENTITY,
+   building_id INT NOT NULL,
+   item_name VARCHAR(200),
+   start_time VARCHAR(100),
+	end_time VARCHAR(100),
+   PRIMARY KEY(schedule_id), 
+   CONSTRAINT fk_scheduleBuildingId
+      FOREIGN KEY(building_id) 
+	  REFERENCES space_admin.buildings_master(building_id)
+);

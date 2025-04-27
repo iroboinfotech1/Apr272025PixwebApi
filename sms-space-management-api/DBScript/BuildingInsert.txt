@@ -1,0 +1,67 @@
+﻿INSERT INTO space_admin.building(building_name,address,city,state,country,zip,org_id,supporting_facilities,group_name)
+						VALUES ('Shols','255,infy city chennai','chennai','tamilnadu','india','609001','101','{10}','Alphagroup')
+						
+						INSERT INTO space_admin.building(building_name,address,city,state,country,zip,org_id,supporting_facilities,group_name)
+						VALUES ('Sholbuilding1','255,infy city chennai','chennai','tamilnadu','india','609001','101','{10}','Alphagroup')
+						INSERT INTO space_admin.building(building_name,address,city,state,country,zip,org_id,supporting_facilities,group_name)
+						VALUES ('Sholbuilding2','255,infy city chennai','chennai','tamilnadu','india','609001','101','{10}','Alphagroup')
+						
+
+
+						Create Building
+===============
+{
+  "id": 0,
+  "buildingName": "InfosysPorur",
+  "orgId": 101,
+  "groupName": "BetaGroup",
+  "address": "114,RMZ DLF park",
+  "city": "Chennai",
+  "state": "TamilNadu",
+  "country": "India",
+  "zip": 609001",
+  "supportingFacilities": [
+    102,
+    103
+  ],
+  "floors": [
+    {
+      "floorId": 1,
+      "buildingId": 0,
+      "floorName": "Floor1",
+      "floorPlan": "c:\image1\image.png"
+    },
+    {
+      "floorId": 2,
+      "buildingId": 0,
+      "floorName": "Floor201",
+      "floorPlan": "c:\image1\image.png"
+    },
+    {
+      "floorId": 3,
+      "buildingId": 0,
+      "floorName": "floor301",
+      "floorPlan": "c:\image1\image.png"
+    }
+  ]
+}
+
+
+Update Building:
+
+{
+  "id": 4,
+  "buildingName": "InfosysUSA",
+  "orgId": 101,
+  "groupName": "BetaGroup",
+  "address": "118,Texas ",
+  "city": "Chennai",
+  "state": "Texas",
+  "country": "USA",
+  "zip": 609001",
+  "supportingFacilities": [
+    102,
+    103
+  ],
+  "floors": {}
+}

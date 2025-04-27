@@ -1,0 +1,74 @@
+﻿
+--Create Database
+
+CREATE DATABASE Playermanagement;
+
+--Create Schema
+
+CREATE SCHEMA space_admin;
+
+--Insert script
+
+CREATE TABLE space_admin.User_management (
+	user_id INT GENERATED ALWAYS AS IDENTITY,
+	user_name VARCHAR ( 100 ),
+	email VARCHAR ( 50 ) ,
+	role_name VARCHAR ( 50 ) ,
+	joined VARCHAR ( 50 ),
+	secret_word VARCHAR ( 50 ),
+	repeat_secretWord VARCHAR ( 50 ),
+	 PRIMARY KEY(user_id)
+);
+
+CREATE TABLE space_admin.Role(
+   role_id INT GENERATED ALWAYS AS IDENTITY,
+   user_id INT,
+   role_name VARCHAR(255) NOT NULL,
+   role_base VARCHAR(100),
+   PRIMARY KEY(role_id),
+   CONSTRAINT fk_user
+      FOREIGN KEY(user_id) 
+	  REFERENCES space_admin.User_management(user_id)
+);
+
+CREATE TABLE space_admin.Permission(
+   permission_id INT GENERATED ALWAYS AS IDENTITY,
+   role_id INT,
+   isconnectormanagement BOOLEAN ,
+   isgroupmanagement BOOLEAN,
+   isbookroom  BOOLEAN,
+	isbookservice BOOLEAN,
+	isusermanagement BOOLEAN,
+	isspacemanagement BOOLEAN,
+	isbookdesk BOOLEAN,
+	isfindcolleague BOOLEAN,
+	isplayermangement BOOLEAN,
+	isorganizationmanagement BOOLEAN,
+	isbookparking BOOLEAN,
+	ismanagevisitor BOOLEAN,
+	issampledata1 BOOLEAN,
+	issampledata2 BOOLEAN ,
+   PRIMARY KEY(permission_id) ,
+   CONSTRAINT fk_role
+      FOREIGN KEY(role_id) 
+	  REFERENCES space_admin.Role(role_id)
+);
+--insert
+{
+  "serialNumber": "1",
+  "deviceName": "Dell",
+  "ipAddress": "10.01.10.10",
+  "department": "ComputerScience",
+  "locationName": "Chennai",
+  "contactPerson": "xyz",
+  "resolution": "Good",
+  "spaceName": "Fullspace",
+  "theme": "Backgroud",
+  "orientation": "left",
+  "deviceStatus": 0
+}
+--Delete
+
+--update
+
+--Get

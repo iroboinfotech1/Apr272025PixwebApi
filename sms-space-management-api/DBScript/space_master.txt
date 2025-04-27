@@ -1,0 +1,54 @@
+﻿
+-- SEQUENCE: space_admin.space_master_spaceid_seq
+
+-- DROP SEQUENCE IF EXISTS space_admin.space_master_spaceid_seq;
+
+CREATE SEQUENCE IF NOT EXISTS space_admin.space_master_spaceid_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1
+    OWNED BY space_master.space_id;
+
+ALTER SEQUENCE space_admin.space_master_spaceid_seq
+    OWNER TO postgres;
+	
+	
+
+-- Table: space_admin.space_master
+
+-- DROP TABLE IF EXISTS space_admin.space_master;
+
+CREATE TABLE IF NOT EXISTS space_admin.space_master
+(
+    space_id integer NOT NULL DEFAULT nextval('space_admin.space_master_spaceid_seq'::regclass),
+    floor_id integer,
+    spacealiasname text COLLATE pg_catalog."default",
+    mappedcalendar_ids integer[],
+    email text COLLATE pg_catalog."default",
+    directionnotes text COLLATE pg_catalog."default",
+    servicingfacilities integer[],
+    coordinates text COLLATE pg_catalog."default",
+    workweekdays json,
+    starttime text COLLATE pg_catalog."default",
+    end_time text COLLATE pg_catalog."default",
+    resources json,
+    role json,
+    org_id integer,
+    building_id integer,
+    space_type text COLLATE pg_catalog."default",
+    CONSTRAINT space_master_pkey PRIMARY KEY (space_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.space_master
+    OWNER to postgres;
+	
+	
+--
+ALTER TABLE space_admin.space_master ALTER COLUMN space_type TYPE INTEGER USING space_type::integer;
+ALTER TABLE space_admin.space_master RENAME COLUMN space_type TO space_type_id
+ALTER TABLE space_admin.space_master ALTER COLUMN workweekdays TYPE TEXT USING workweekdays::TEXT;
+ALTER TABLE space_admin.space_master ADD COLUMN space_image TEXT;

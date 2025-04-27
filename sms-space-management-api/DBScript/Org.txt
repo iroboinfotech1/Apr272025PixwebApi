@@ -1,0 +1,34 @@
+﻿-- Table: space_admin.organisation_master
+
+-- DROP TABLE IF EXISTS space_admin.organisation_master;
+
+CREATE TABLE IF NOT EXISTS space_admin.organisation_master
+(
+    org_id integer NOT NULL DEFAULT nextval('space_admin.organisation_master_orgid_seq'::regclass),
+    org_name text COLLATE pg_catalog."default",
+    industry text COLLATE pg_catalog."default",
+    building_name text COLLATE pg_catalog."default",
+    mailing_address text COLLATE pg_catalog."default",
+    country text COLLATE pg_catalog."default",
+    state text COLLATE pg_catalog."default",
+    city text COLLATE pg_catalog."default",
+    zipcode text COLLATE pg_catalog."default",
+    phone_number text COLLATE pg_catalog."default",
+    email text COLLATE pg_catalog."default",
+    website text COLLATE pg_catalog."default",
+    image text COLLATE pg_catalog."default",
+    logo text COLLATE pg_catalog."default",
+    org_guid text COLLATE pg_catalog."default",
+    roles json,
+    CONSTRAINT organisation_master_pkey PRIMARY KEY (org_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS space_admin.organisation_master
+    OWNER to postgres;
+
+
+CREATE SEQUENCE space_admin.organisation_master_orgid_seq
+INCREMENT 1
+START 100
