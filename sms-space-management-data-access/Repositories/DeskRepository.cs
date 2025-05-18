@@ -20,7 +20,7 @@ namespace sms.space.management.data.access.Repositories
         public async Task<List<AvailableSpace>> GetAllAvailableDesk(SpaceFilter filter)
         {
             //Get All
-            var query = $@"SELECT sm.spacealiasname as spaceName, sm.space_id as spaceId, sm.space_type_id as spaceType, sm.coordinates, 
+            var query = $@"SELECT sm.spacealiasname as spaceName,sm.space_image as space_image, sm.space_id as spaceId, sm.space_type_id as spaceType, sm.coordinates, 
 				b.building_id as buildingId, b.building_name as buildingName, b.address, om.image as organisationImage,
 				fr.resource_id as resourceId, fr.icon as resourceIcon, fr.facility_id as facilityId,smt.start_date as startDate, 
                 smt.end_date as endDate, fr.name as facilityName,f.floor_id as floorId, f.floor_name as floorName, f.floor_plan as floorImage,
